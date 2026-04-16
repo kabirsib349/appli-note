@@ -45,6 +45,8 @@ model User {
   updatedAt     DateTime  @updatedAt
   accounts      Account[]
   sessions      Session[]
+  notes Note[]
+  subscriptions Subscription[]
 }
 
 model VerificationToken {
@@ -53,4 +55,27 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+model Note {
+  id String @id @unique @default(cuid())
+  title String?
+  description String?
+  completed Boolean @default(false)
+  createAt DateTime @default(now())
+  updateAt DateTime @updatedAt()
+  userId String
+  user User @relation(fields:[userId], references:[id])
+}
+
+model Subscription{
+  stripeSubscriptionId String @id @unique
+  interval String
+  planId String
+  currentPeriodStart Int
+  currentPeriodEnd Int
+  createAt DateTime @default(now())
+  updateAt DateTime @updatedAt
+  userId String
+  user User @relation(fields: [userId], references: [id])
 }
