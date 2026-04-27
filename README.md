@@ -1,36 +1,58 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+ Appli-Note (SaaS)
 
-## Getting Started
+  Une application moderne de prise de notes avec un modèle économique SaaS, incluant une gestion d'abonnements Premium.
 
-First, run the development server:
+   Stack Technique
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+   - Framework : Next.js 15 (App Router) (https://nextjs.org/)
+   - Authentification : Kinde (https://kinde.com/) (ou ton provider actuel)
+   - Base de données : Prisma (https://www.prisma.io/) avec PostgreSQL (via Supabase/Aiven)
+   - Paiements : Stripe (https://stripe.com/) (Abonnements & Webhooks)
+   - Styling : Tailwind CSS (https://tailwindcss.com/) & Shadcn/ui (https://ui.shadcn.com/)
+   - Icônes : Lucide React (https://lucide.dev/)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+   Fonctionnalités
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+   - Authentification Sécurisée : Connexion et inscription simplifiées.
+   - Gestion des Notes : Création, modification et suppression de notes personnelles.
+   - Pass Premium : Système d'abonnement mensuel(zero fonctionnalité debloqué mais le principe d'abonnement est là😉).
+   - Espace Client Stripe : Gestion de l'abonnement et des factures via le portail client Stripe.
+   - Design Responsive : Interface optimisée pour mobile, tablette et desktop.
+   - Mode Sombre/Clair : Support complet du thème système.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+   Installation
 
-## Learn More
+   1. Cloner le projet :
 
-To learn more about Next.js, take a look at the following resources:
+   1    git clone https://github.com/ton-username/appli-note.git
+   2    cd appli-note
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+   2. Installer les dépendances :
+   1    npm install
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+   3. Configurer les variables d'environnement :
+     Crée un fichier .env à la racine et ajoute tes clés :
 
-## Deploy on Vercel
+   1    DATABASE_URL=
+   2    KINDE_CLIENT_ID=
+   3    STRIPE_API_KEY=
+   4    STRIPE_WEBHOOK_SECRET=
+   5    NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+   4. Initialiser la base de données :
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+   1    npx prisma generate
+   2    npx prisma db push
+
+   5. Lancer le serveur de développement :
+   1    npm run dev
+
+   Configuration Stripe (Local)
+
+  Pour tester les paiements en local, lance le Stripe CLI pour rediriger les webhooks :
+
+   1 stripe listen --forward-to localhost:3000/api/webhook/stripe
+
+   Licence
+
+  Distribué sous la licence MIT. Voir LICENSE pour plus d'informations.
