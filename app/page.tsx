@@ -8,7 +8,6 @@ import { redirect } from "next/navigation";
 
 export default function Home(){
   const {data:session} = useSession();
- // console.log(session);
  if(session){
   return redirect("/dashboard/notes");
  }

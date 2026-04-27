@@ -71,11 +71,12 @@ model Note {
 model Subscription{
   stripeSubscriptionId String @id @unique
   interval String
+  status String
   planId String
   currentPeriodStart Int
   currentPeriodEnd Int
   createAt DateTime @default(now())
   updateAt DateTime @updatedAt
-  userId String
+  userId String @unique
   user User @relation(fields: [userId], references: [id])
 }

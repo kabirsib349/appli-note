@@ -2,8 +2,11 @@ import {Card, CardContent} from "@/components/ui/card";
 import Image from "next/image";
 import Badge from "@/public/logo_premium.png"
 import { CheckCircle } from "lucide-react";
+import { createSubscription,getDataStripeUser,createCustomerPortal } from "@/lib/actionsStripe";
+import { Button } from "@/components/ui/button";
+import { getUser } from "@/lib/actionsUser";
 
-export default function PagePayment(){
+export default async function PagePayment(){
 
     const itemsPremium = [
         {name: "Hébergement web fiable et sécurisé"},
@@ -11,6 +14,39 @@ export default function PagePayment(){
         {name: "Ajout de fonctionnalités sur demande"},
         {name: "Mises à jour et support technique"},
     ]
+    const user = await getUser();
+    const dataStripeUser = await getDataStripeUser(user?.id as string);
+
+    if (dataStripeUser?.status === "active") {
+        return (
+            <div className="max-w-lg mx-auto space-y-4 my-3">
+                <Card className="flex flex-col">
+                    <CardContent className="py-8">
+                        <div>
+                            <h3 className="text-md font-black uppercase bg-orange-900 bg-opacity-20 text-orange-500 p-3 rounded-md inline">
+                                Pass Premium
+                            </h3>
+                            <p className="mt-4 text-sm text-muted-foreground">
+                                Modifier votre abonnement premium
+                            </p>
+                            <Image 
+                                src={Badge} 
+                                width={200} 
+                                height={200} 
+                                alt="badge" 
+                                className="block my-4" 
+                            />
+                            <form className="w-full mt-4" action={createCustomerPortal}>
+                                <Button className="bg-orange-500 hover:bg-orange-600 text-white w-full">
+                                    Modifier abonnement
+                                </Button>
+                            </form>
+                        </div>
+                    </CardContent>
+                </Card>
+            </div>
+        );
+    }
 
     return(
         <div className="mt-3 max-w-lg mx-auto space-y-4">
@@ -32,6 +68,11 @@ export default function PagePayment(){
                                 </li>
                             ))}
                         </ul>
+                        <form action={createSubscription}>
+                            <Button className="bg-orange-500 hover:bg-orange-600 text-white">
+                                Devener membre premium
+                            </Button>
+                        </form>
                     </div>
                 </CardContent>
             </Card>
