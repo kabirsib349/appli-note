@@ -16,7 +16,7 @@ interface Note {
     title: string | null;
     description: string | null;
     createAt: Date;
-    pinned: boolean;
+    pinned?: boolean;
 }
 
 interface NoteListClientProps {
