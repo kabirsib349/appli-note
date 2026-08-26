@@ -142,3 +142,4 @@ export default function NoteListClient({ initialNotes, hasPremiumAccess }: NoteL
         </div>
     );
 }
+
