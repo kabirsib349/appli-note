@@ -6,8 +6,8 @@ import { Button } from "@/components/ui/button";
 
 export default function ButtonSignOut(){
     const router = useRouter();
-    const handleSingOut = () => {
-        signOut;
+    const handleSingOut = async () => {
+        await signOut({redirect: false});
         router.push('/');
     }
     return(
