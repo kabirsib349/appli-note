@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button"
 import { getAllNotes } from "@/lib/actionsNotes";
 import { getUser } from "@/lib/actionsUser";
+import { isPremiumOrAdmin } from "@/lib/permissions";
 import { Card } from "@/components/ui/card"
 import Link from "next/link";
 import {File, FilePenLine} from "lucide-react";
@@ -9,6 +10,10 @@ import DeleteButton from "@/app/components/DeleteButton";
 export default async function PageNotes(){
     const user = await getUser();  
     const data = await getAllNotes(user?.id as string)
+
+    // Phase 3 : Vérification limite UI
+    const hasPremiumAccess = await isPremiumOrAdmin(user?.id as string);
+    const isOverLimit = data.length >= 5 && !hasPremiumAccess;
 
     return(
         <section className="grid items-start gap-y-8">
@@ -20,11 +25,17 @@ export default async function PageNotes(){
                     </p>
                     <div className="w-12 h-[1px] bg-white mx-1 my-2"></div>
                 </div>
-                <Button>
-                    <Link href="/dashboard/notes/create">
-                        Créer une note
-                    </Link>
-                </Button>
+                {isOverLimit ? (
+                    <Button disabled className="bg-gray-500 hover:bg-gray-500 text-white cursor-not-allowed">
+                        <Link href="/dashboard/payment">Limite atteinte - Passez Premium</Link>
+                    </Button>
+                ) : (
+                    <Button>
+                        <Link href="/dashboard/notes/create">
+                            Créer une note
+                        </Link>
+                    </Button>
+                )}
             </div>
             {data.length < 1 ? (
                 <div className="flex flex-col items-center justify-center h-min-[400px] rounded-md border border-dashed p-3">
