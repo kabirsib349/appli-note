@@ -5,6 +5,8 @@ import { prisma } from "@/lib/db"
 import { revalidatePath } from "next/cache"
 import {redirect} from "next/navigation"
 
+import { isPremiumOrAdmin } from "@/lib/permissions"
+
 export const getAllNotes = async function (userId: string) {
     const data = await prisma.note.findMany({
         where:{
@@ -23,6 +25,15 @@ export const createNote = async function (formData: FormData){
     const user = await getUser()
     const userId = user?.id as string
 
+    // Phase 3 : Vérification de la limite
+    const hasPremiumAccess = await isPremiumOrAdmin(userId);
+    if (!hasPremiumAccess) {
+        const notesCount = await prisma.note.count({ where: { userId } });
+        if (notesCount >= 5) {
+            throw new Error("Limite de notes atteinte pour le plan gratuit.");
+        }
+    }
+
     await prisma.note.create({
         data:{
             userId: userId,
@@ -31,7 +42,6 @@ export const createNote = async function (formData: FormData){
         }
     })
     redirect("/dashboard/notes")
-
 }
 
 export const deleteNote = async function(formData:FormData){
