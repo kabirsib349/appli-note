@@ -3,7 +3,9 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model Account {
@@ -61,7 +63,6 @@ model Note {
   id String @id @unique @default(cuid())
   title String?
   description String?
-  completed Boolean @default(false)
   createAt DateTime @default(now())
   updateAt DateTime @updatedAt()
   userId String
