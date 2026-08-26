@@ -20,7 +20,6 @@ export const getAllNotes = async function (userId: string) {
 export const createNote = async function (formData: FormData){
     const title = formData.get("title") as string
     const description = formData.get("description") as string
-    const completed = formData.get("completed") 
     const user = await getUser()
     const userId = user?.id as string
 
@@ -29,7 +28,6 @@ export const createNote = async function (formData: FormData){
             userId: userId,
             title: title,
             description: description,
-            completed: completed==="on"
         }
     })
     redirect("/dashboard/notes")
@@ -38,38 +36,48 @@ export const createNote = async function (formData: FormData){
 
 export const deleteNote = async function(formData:FormData){
     const id = formData.get("id") as string
+    const user = await getUser()
+    const userId = user?.id as string
+
     await prisma.note.delete({
-        where: {id}
+        where: {
+            id: id,
+            userId: userId // Sécurité : vérifie le propriétaire
+        }
     })
     revalidatePath('/')
 }
 
 export const getNote = async function (id: string){
+    const user = await getUser()
+    const userId = user?.id as string
+
     const note = await prisma.note.findUnique({
-        where: {id}
+        where: {
+            id: id,
+            userId: userId // Sécurité : vérifie le propriétaire
+        }
     })
     return note
 }
 
 export const updateNote = async function(formData: FormData){
-    try{
-        const id = formData.get("id") as string
-        const title = formData.get("title") as string
-        const description = formData.get("description") as string
-        const completed = formData.get("completed");
+    const id = formData.get("id") as string
+    const title = formData.get("title") as string
+    const description = formData.get("description") as string
+    const user = await getUser()
+    const userId = user?.id as string
 
-        if(title!== null || description!== null)
-        await prisma.note.update({
-            where: {id},
-            data:{
-                title: title,
-                description: description,
-                completed: completed === "on"
-            }
-        })
-    }catch(error){
-        console.log("Erreur lors de la modification",error)
-    }finally{
-        redirect("/")
-    }
-} 
+    if(title!== null && description!== null)
+    await prisma.note.update({
+        where: {
+            id: id,
+            userId: userId // Sécurité : vérifie le propriétaire
+        },
+        data:{
+            title: title,
+            description: description,
+        }
+    })
+    redirect("/dashboard/notes")
+}
