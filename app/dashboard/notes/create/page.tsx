@@ -3,10 +3,16 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
 import { createNote } from "@/lib/actionsNotes"
+import AiTextarea from "@/app/components/AiTextarea"
+import AiInput from "@/app/components/AiInput"
+import { getUser } from "@/lib/actionsUser"
+import { isPremiumOrAdmin } from "@/lib/permissions"
 
-export default function CreatePage(){
+export default async function CreatePage(){
+    const user = await getUser();
+    const hasPremiumAccess = await isPremiumOrAdmin(user?.id as string);
+
     return(
         <Card>
             <form action={createNote}>
@@ -17,11 +23,11 @@ export default function CreatePage(){
                 <CardContent className="flex flex-col gap-y-5 my-5">
                     <div className="flex flex-col gap-y-2">
                         <Label htmlFor="title">Titre</Label>
-                        <Input type="text" name="title" id="title" required placeholder="Votre titre"/> 
+                        <AiInput hasPremiumAccess={hasPremiumAccess} />
                     </div>
                     <div className="flex flex-col gap-y-2">
                         <Label htmlFor="description">Description</Label>
-                        <Textarea name="description" id="description" required placeholder="Votre description"/> 
+                        <AiTextarea hasPremiumAccess={hasPremiumAccess} />
                     </div>
                 </CardContent>
                 <CardFooter className="flex items-center justify-between">
