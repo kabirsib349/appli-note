@@ -16,13 +16,8 @@ export default function ShareButtons({ title, description }: ShareButtonsProps) 
     const twitterText = encodeURIComponent(`${safeTitle}\n\n${safeDescription}`);
     const twitterUrl = `https://twitter.com/intent/tweet?text=${twitterText}`;
 
-    // Formatage pour Email (Client mail natif ou Gmail)
-    const mailSubject = encodeURIComponent(safeTitle);
-    const mailBody = encodeURIComponent(safeDescription);
-    const mailtoUrl = `mailto:?subject=${mailSubject}&body=${mailBody}`;
-
-    // Alternative spécifique à Gmail Web si tu préfères forcer Gmail
-    // const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&su=${mailSubject}&body=${mailBody}`;
+    // Lien spécifique pour forcer Gmail Web
+    const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&su=${mailSubject}&body=${mailBody}`;
 
     return (
         <div className="flex items-center gap-2">
@@ -32,11 +27,12 @@ export default function ShareButtons({ title, description }: ShareButtonsProps) 
                 </a>
             </Button>
 
-            <Button type="button" variant="outline" size="icon" className="bg-red-500/10 border-red-500/20 hover:bg-red-500/20" asChild title="Envoyer par Email">
-                <a href={mailtoUrl} target="_blank" rel="noopener noreferrer">
+            <Button type="button" variant="outline" size="icon" className="bg-red-500/10 border-red-500/20 hover:bg-red-500/20" asChild title="Envoyer via Gmail">
+                <a href={gmailUrl} target="_blank" rel="noopener noreferrer">
                     <Mail className="w-4 h-4 text-red-500" />
                 </a>
             </Button>
         </div>
     );
 }
+
