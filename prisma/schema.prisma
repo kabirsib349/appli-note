@@ -61,13 +61,14 @@ model VerificationToken {
 }
 
 model Note {
-  id String @id @unique @default(cuid())
-  title String?
+  id          String   @id @unique @default(cuid())
+  title       String?
   description String?
-  createAt DateTime @default(now())
-  updateAt DateTime @updatedAt()
-  userId String
-  user User @relation(fields:[userId], references:[id])
+  createAt    DateTime @default(now())
+  updateAt    DateTime @updatedAt
+  pinned      Boolean  @default(false)
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
 }
 
 model Subscription{

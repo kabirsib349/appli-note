@@ -2,10 +2,8 @@ import { Button } from "@/components/ui/button"
 import { getAllNotes } from "@/lib/actionsNotes";
 import { getUser } from "@/lib/actionsUser";
 import { isPremiumOrAdmin } from "@/lib/permissions";
-import { Card } from "@/components/ui/card"
 import Link from "next/link";
-import {File, FilePenLine} from "lucide-react";
-import DeleteButton from "@/app/components/DeleteButton";
+import NoteListClient from "@/app/components/NoteListClient";
 
 export default async function PageNotes(){
     const user = await getUser();  
@@ -30,55 +28,15 @@ export default async function PageNotes(){
                         <Link href="/dashboard/payment">Limite atteinte - Passez Premium</Link>
                     </Button>
                 ) : (
-                    <Button>
+                    <Button asChild>
                         <Link href="/dashboard/notes/create">
                             Créer une note
                         </Link>
                     </Button>
                 )}
             </div>
-            {data.length < 1 ? (
-                <div className="flex flex-col items-center justify-center h-min-[400px] rounded-md border border-dashed p-3">
-                    <div className="w-16 h-16 rounded-full flex items-center justify-center bg-orange-500/20 mb-4">
-                        <File className="text-orange-900"/>
-                    </div>
-                    <p className="text-white text-lg">Vous n'avez aucune note</p>
-                    <p className="text-muted-foreground text-sm mt-2">Commencez dès maintenant à créer des notes</p>
-                    <Button className="bg-orange-500 hover:bg-orange-600 text-white mt-6">
-                        <Link href="/dashboard/notes/create">
-                            Créer une nouvelle note
-                        </Link>
-                    </Button>
-                </div>
-            ):(
-                <div className="flex flex-col space-y-4">
-                    {data?.map((item, index)=>( 
-                        <Card key={index} className="flex items-center justify-between p-4">
-                            <div>
-                                <h2 className="text-orange-500 font-bold text-xl">
-                                    {item.title}
-                                </h2>
-                                <p className="text-sm text-muted-foreground">
-                                    écrit le {new Intl.DateTimeFormat(
-                                        'fr-FR',
-                                        {
-                                            dateStyle: "full"
-                                        }).format(new Date(item.createAt))
-                                    }
-                                </p>
-                            </div>
-                            <div className="flex items-center gap-2">
-                                <Button type="button" className="mt-4 mb-3 bg-yellow-500 hover:bg-yellow-600 text-white">
-                                    <Link href={`notes/note/${item.id}`}>
-                                        <FilePenLine className="w-4"/>
-                                    </Link>
-                                </Button>
-                                <DeleteButton id={item.id}/>
-                            </div>
-                        </Card>)
-                    )}
-                </div>
-            )}
+            
+            <NoteListClient initialNotes={data} hasPremiumAccess={hasPremiumAccess} />
         </section>
     );
 }

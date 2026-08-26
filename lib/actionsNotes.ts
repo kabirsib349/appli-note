@@ -89,5 +89,30 @@ export const updateNote = async function(formData: FormData){
             description: description,
         }
     })
+    })
     redirect("/dashboard/notes")
+}
+
+export const togglePin = async (id: string) => {
+    const user = await getUser();
+    if (!user) {
+        throw new Error("Vous n'êtes pas autorisé à épingler une note");
+    }
+
+    const note = await prisma.note.findUnique({
+        where: { id: id, userId: user.id }
+    });
+
+    if (!note) {
+        throw new Error("Note introuvable");
+    }
+
+    await prisma.note.update({
+        where: { id: id, userId: user.id },
+        data: {
+            pinned: !note.pinned
+        }
+    });
+
+    revalidatePath('/dashboard/notes');
 }

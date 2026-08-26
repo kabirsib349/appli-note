@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input"
 import { getNote, updateNote } from "@/lib/actionsNotes"
 import AiTextarea from "@/app/components/AiTextarea"
 import AiInput from "@/app/components/AiInput"
+import ExportButton from "@/app/components/ExportButton"
 import { getUser } from "@/lib/actionsUser"
 import { isPremiumOrAdmin } from "@/lib/permissions"
 
@@ -45,12 +46,20 @@ export default async function PageNote({params}: UpdateParamProps){
                     </div>
                 </CardContent>
                 <CardFooter className="flex items-center justify-between">
-                    <Button type="button" className="bg-red-500 hover:bg-red-600 text-white">
+                    <Button type="button" variant="destructive" asChild>
                         <Link href="/dashboard/notes">Annuler</Link>
                     </Button>
-                     <Button type="submit" className="bg-orange-500 hover:bg-orange-600 text-white">
-                        Modifier
-                    </Button>
+                    <div className="flex items-center gap-2">
+                        {note && (
+                            <ExportButton 
+                                title={note.title} 
+                                description={note.description} 
+                                createAt={note.createAt} 
+                                hasPremiumAccess={hasPremiumAccess} 
+                            />
+                        )}
+                        <Button type="submit" className="bg-orange-500 hover:bg-orange-600 text-white">Sauvegarder</Button>
+                    </div>
                 </CardFooter>
             </form>
         </Card>
