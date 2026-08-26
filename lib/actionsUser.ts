@@ -20,12 +20,15 @@ export const getUser = async ()=>{
 
 export const updateUser = async (formData: FormData)=>{
     try{
+        const user = await getUser();
+        if (!user) return;
+        
         const userName = formData.get("name") as string;
-        const id = formData.get("id") as string;
-        if(userName !== null){
+        // Utiliser l'id de la SESSION, pas du formulaire HTML
+        if(userName && userName.trim() !== ""){
             await prisma.user.update({
-                where:{id: id},
-                data: {name: userName}
+                where: {id: user.id},
+                data: {name: userName.trim()}
             })
         }
     }catch(error){
