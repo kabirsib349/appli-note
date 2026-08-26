@@ -34,7 +34,7 @@ export const createSubscription = async()=>{
     })
     const subscriptionUrl = await getStripe({
         customerId: dbUser?.stripeCustomerId as string,
-        domainUrl: "http://localhost:3000",
+        domainUrl: process.env.NEXTAUTH_URL as string,
         priceId: process.env.STRIPE_PRICE_ID as string
     })
     return redirect(subscriptionUrl);
@@ -44,7 +44,7 @@ export const createCustomerPortal=async()=>{
     const user = await getUser();
     const session = await stripe.billingPortal.sessions.create({
         customer: user?.stripeCustomerId as string,
-        return_url: "http://localhost:3000/dashboard/payment"
+        return_url: `${process.env.NEXTAUTH_URL}/dashboard/payment`
     })
     return redirect(session.url);
 }
