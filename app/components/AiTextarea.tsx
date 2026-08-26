@@ -17,7 +17,7 @@ export default function AiTextarea({ defaultValue = "", hasPremiumAccess }: AiTe
     const [text, setText] = useState(defaultValue);
     const [activeAction, setActiveAction] = useState<string | null>(null);
 
-    const handleAIAction = async (actionName: string, actionFn: (text: string) => Promise<string>, successMessage: string) => {
+    const handleAIAction = async (actionName: string, actionFn: (text: string) => Promise<{error?: string, data?: string}>, successMessage: string) => {
         if (!text.trim()) {
             toast.error("Veuillez écrire du texte d'abord.");
             return;
@@ -26,8 +26,12 @@ export default function AiTextarea({ defaultValue = "", hasPremiumAccess }: AiTe
         setActiveAction(actionName);
         try {
             const result = await actionFn(text);
-            setText(result);
-            toast.success(successMessage);
+            if (result.error) {
+                toast.error(result.error);
+            } else if (result.data !== undefined) {
+                setText(result.data);
+                toast.success(successMessage);
+            }
         } catch (error: any) {
             toast.error(error.message || "Une erreur est survenue avec l'IA.");
         } finally {

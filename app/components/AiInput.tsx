@@ -17,7 +17,7 @@ export default function AiInput({ defaultValue = "", hasPremiumAccess }: AiInput
     const [text, setText] = useState(defaultValue);
     const [activeAction, setActiveAction] = useState<string | null>(null);
 
-    const handleAIAction = async (actionName: string, actionFn: (text: string) => Promise<string>, successMessage: string) => {
+    const handleAIAction = async (actionName: string, actionFn: (text: string) => Promise<{error?: string, data?: string}>, successMessage: string) => {
         if (!text.trim()) {
             toast.error("Veuillez écrire un titre d'abord.");
             return;
@@ -26,9 +26,13 @@ export default function AiInput({ defaultValue = "", hasPremiumAccess }: AiInput
         setActiveAction(actionName);
         try {
             const result = await actionFn(text);
-            // On enlève les retours à la ligne potentiels car c'est un input text court
-            setText(result.replace(/\n/g, " ").trim());
-            toast.success(successMessage);
+            if (result.error) {
+                toast.error(result.error);
+            } else if (result.data !== undefined) {
+                // On enlève les retours à la ligne potentiels car c'est un input text court
+                setText(result.data.replace(/\n/g, " ").trim());
+                toast.success(successMessage);
+            }
         } catch (error: any) {
             toast.error(error.message || "Une erreur est survenue avec l'IA.");
         } finally {
