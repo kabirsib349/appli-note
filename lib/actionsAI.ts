@@ -28,14 +28,11 @@ RÈGLE 3 : Renvoie UNIQUEMENT le texte corrigé, sans conversation. S'il n'y a p
     }
 }
 
-// 4.3 - Restructuration (Premium uniquement)
+// 4.3 - Restructuration (Désormais gratuit)
 export async function restructureText(text: string): Promise<AIResponse> {
     try {
         const user = await getUser();
         if (!user) return { error: "Vous devez être connecté pour utiliser l'IA." };
-
-        const hasPremiumAccess = await isPremiumOrAdmin(user.id);
-        if (!hasPremiumAccess) return { error: "Fonctionnalité Premium requise." };
 
         if (!text || text.trim() === "") return { data: text };
         if (text.length > 10000) return { error: "Le texte est trop long (limite: 10 000 caractères)." };
@@ -53,14 +50,11 @@ RÈGLE 3 : Renvoie UNIQUEMENT le résultat formaté, sans commentaire.`;
     }
 }
 
-// 4.3 - Amélioration du style (Premium uniquement)
+// 4.3 - Amélioration du style (Désormais gratuit)
 export async function improveStyleText(text: string): Promise<AIResponse> {
     try {
         const user = await getUser();
         if (!user) return { error: "Vous devez être connecté pour utiliser l'IA." };
-
-        const hasPremiumAccess = await isPremiumOrAdmin(user.id);
-        if (!hasPremiumAccess) return { error: "Fonctionnalité Premium requise." };
 
         if (!text || text.trim() === "") return { data: text };
         if (text.length > 10000) return { error: "Le texte est trop long (limite: 10 000 caractères)." };

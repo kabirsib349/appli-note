@@ -55,46 +55,29 @@ export default function AiTextarea({ defaultValue = "", hasPremiumAccess }: AiTe
                     Corriger
                 </Button>
 
-                {/* Boutons Premium */}
-                {hasPremiumAccess ? (
-                    <>
-                        <Button 
-                            type="button" 
-                            variant="outline" 
-                            size="sm"
-                            disabled={activeAction !== null}
-                            onClick={() => handleAIAction("restructure", restructureText, "Texte restructuré avec succès !")}
-                            className="text-xs bg-orange-50 text-orange-600 border-orange-200 hover:bg-orange-100"
-                        >
-                            {activeAction === "restructure" ? <Loader2 className="w-3 h-3 mr-1 animate-spin" /> : <Wand2 className="w-3 h-3 mr-1" />}
-                            Restructurer
-                        </Button>
-                        <Button 
-                            type="button" 
-                            variant="outline" 
-                            size="sm"
-                            disabled={activeAction !== null}
-                            onClick={() => handleAIAction("style", improveStyleText, "Style amélioré avec succès !")}
-                            className="text-xs bg-purple-50 text-purple-600 border-purple-200 hover:bg-purple-100"
-                        >
-                            {activeAction === "style" ? <Loader2 className="w-3 h-3 mr-1 animate-spin" /> : <Sparkles className="w-3 h-3 mr-1" />}
-                            Améliorer le style
-                        </Button>
-                    </>
-                ) : (
-                    <>
-                        <Button type="button" variant="outline" size="sm" asChild className="text-xs bg-gray-100 text-gray-500 cursor-not-allowed">
-                            <Link href="/dashboard/payment">
-                                <Lock className="w-3 h-3 mr-1" /> Restructurer (Premium)
-                            </Link>
-                        </Button>
-                        <Button type="button" variant="outline" size="sm" asChild className="text-xs bg-gray-100 text-gray-500 cursor-not-allowed">
-                            <Link href="/dashboard/payment">
-                                <Lock className="w-3 h-3 mr-1" /> Améliorer le style (Premium)
-                            </Link>
-                        </Button>
-                    </>
-                )}
+                {/* Boutons Restructurer et Améliorer (Maintenant gratuits) */}
+                <Button 
+                    type="button" 
+                    variant="outline" 
+                    size="sm"
+                    disabled={activeAction !== null}
+                    onClick={() => handleAIAction("restructure", restructureText, "Texte restructuré avec succès !")}
+                    className="text-xs bg-orange-50 text-orange-600 border-orange-200 hover:bg-orange-100"
+                >
+                    {activeAction === "restructure" ? <Loader2 className="w-3 h-3 mr-1 animate-spin" /> : <Wand2 className="w-3 h-3 mr-1" />}
+                    Restructurer
+                </Button>
+                <Button 
+                    type="button" 
+                    variant="outline" 
+                    size="sm"
+                    disabled={activeAction !== null}
+                    onClick={() => handleAIAction("style", improveStyleText, "Style amélioré avec succès !")}
+                    className="text-xs bg-purple-50 text-purple-600 border-purple-200 hover:bg-purple-100"
+                >
+                    {activeAction === "style" ? <Loader2 className="w-3 h-3 mr-1 animate-spin" /> : <Sparkles className="w-3 h-3 mr-1" />}
+                    Améliorer le style
+                </Button>
             </div>
             
             <Textarea 

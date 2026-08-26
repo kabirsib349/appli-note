@@ -56,26 +56,18 @@ export default function AiInput({ defaultValue = "", hasPremiumAccess }: AiInput
                     Corriger
                 </Button>
 
-                {/* Bouton Premium */}
-                {hasPremiumAccess ? (
-                    <Button 
-                        type="button" 
-                        variant="outline" 
-                        size="sm"
-                        disabled={activeAction !== null}
-                        onClick={() => handleAIAction("style", improveStyleText, "Titre amélioré avec succès !")}
-                        className="text-xs bg-purple-50 text-purple-600 border-purple-200 hover:bg-purple-100"
-                    >
-                        {activeAction === "style" ? <Loader2 className="w-3 h-3 mr-1 animate-spin" /> : <Sparkles className="w-3 h-3 mr-1" />}
-                        Améliorer
-                    </Button>
-                ) : (
-                    <Button type="button" variant="outline" size="sm" asChild className="text-xs bg-gray-100 text-gray-500 cursor-not-allowed">
-                        <Link href="/dashboard/payment">
-                            <Lock className="w-3 h-3 mr-1" /> Améliorer (Premium)
-                        </Link>
-                    </Button>
-                )}
+                {/* Bouton Améliorer (Maintenant gratuit) */}
+                <Button 
+                    type="button" 
+                    variant="outline" 
+                    size="sm"
+                    disabled={activeAction !== null}
+                    onClick={() => handleAIAction("style", improveStyleText, "Titre amélioré avec succès !")}
+                    className="text-xs bg-purple-50 text-purple-600 border-purple-200 hover:bg-purple-100"
+                >
+                    {activeAction === "style" ? <Loader2 className="w-3 h-3 mr-1 animate-spin" /> : <Sparkles className="w-3 h-3 mr-1" />}
+                    Améliorer
+                </Button>
             </div>
             
             <Input 
