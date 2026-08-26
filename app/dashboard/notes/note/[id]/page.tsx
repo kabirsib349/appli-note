@@ -9,8 +9,7 @@ import { getNote, updateNote } from "@/lib/actionsNotes"
 interface Params{
     id: string,
     title: string,
-    description: string,
-    completed: boolean
+    description: string
 }
 
 interface UpdateParamProps{
@@ -38,17 +37,13 @@ export default async function PageNote({params}: UpdateParamProps){
                         <Label htmlFor="description">Description</Label>
                         <Textarea defaultValue={note?.description as string} name="description" id="description" required placeholder="Votre description"/> 
                     </div>
-                    <div className="flex flex-col gap-y-2">
-                        <Label htmlFor="completed">En attente | Complet</Label>
-                        <Input defaultChecked={note?.completed as boolean} type="checkbox" name="completed" id="completed" className="w-6 cursor-pointer"/> 
-                    </div>
                 </CardContent>
                 <CardFooter className="flex items-center justify-between">
                     <Button type="button" className="bg-red-500 hover:bg-red-600 text-white">
                         <Link href="/dashboard/notes">Annuler</Link>
                     </Button>
                      <Button type="submit" className="bg-orange-500 hover:bg-orange-600 text-white">
-                        Modifier note
+                        Modifier
                     </Button>
                 </CardFooter>
             </form>

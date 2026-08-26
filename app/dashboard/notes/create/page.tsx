@@ -23,10 +23,6 @@ export default function CreatePage(){
                         <Label htmlFor="description">Description</Label>
                         <Textarea name="description" id="description" required placeholder="Votre description"/> 
                     </div>
-                    <div className="flex flex-col gap-y-2">
-                        <Label htmlFor="completed">En attente | Complet</Label>
-                        <Input type="checkbox" name="completed" id="completed" className="w-6 cursor-pointer"/> 
-                    </div>
                 </CardContent>
                 <CardFooter className="flex items-center justify-between">
                     <Button type="button" className="bg-red-500 hover:bg-red-600 text-white">
