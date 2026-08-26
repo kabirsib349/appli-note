@@ -42,17 +42,20 @@ export const deleteUser = async()=>{
     if(!session || !session.user || !session.user.id){
         redirect("../");
     }
-    await prisma.user.deleteMany({
-        where: {id: userId}
-    })
      await prisma.subscription.deleteMany({
         where: {userId: userId}
     })
-     await prisma.session.deleteMany({
+    await prisma.session.deleteMany({
         where: {userId: userId}
     })
-     await prisma.account.deleteMany({
+    await prisma.account.deleteMany({
         where: {userId: userId}
+    })
+    await prisma.note.deleteMany({
+        where: {userId: userId}
+    })
+    await prisma.user.deleteMany({
+        where: {id: userId}
     })
 }
     
