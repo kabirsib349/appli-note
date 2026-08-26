@@ -89,7 +89,6 @@ export const updateNote = async function(formData: FormData){
             description: description,
         }
     })
-    })
     redirect("/dashboard/notes")
 }
 
