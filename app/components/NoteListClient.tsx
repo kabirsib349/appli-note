@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { FilePenLine, Pin, Download, Search, File } from "lucide-react";
 import DeleteButton from "@/app/components/DeleteButton";
+import ShareButtons from "@/app/components/ShareButtons";
 import { togglePin } from "@/lib/actionsNotes";
 import { toast } from "react-toastify";
 
@@ -127,6 +128,9 @@ export default function NoteListClient({ initialNotes, hasPremiumAccess }: NoteL
                                 >
                                     <Pin className="w-4 h-4" />
                                 </Button>
+
+                                {/* Boutons de partage */}
+                                <ShareButtons title={item.title} description={item.description} />
 
                                 <Button type="button" className="bg-yellow-500 hover:bg-yellow-600 text-white" size="icon" asChild>
                                     <Link href={`notes/note/${item.id}`}>

@@ -7,6 +7,7 @@ import { getNote, updateNote } from "@/lib/actionsNotes"
 import AiTextarea from "@/app/components/AiTextarea"
 import AiInput from "@/app/components/AiInput"
 import ExportButton from "@/app/components/ExportButton"
+import ShareButtons from "@/app/components/ShareButtons"
 import { getUser } from "@/lib/actionsUser"
 import { isPremiumOrAdmin } from "@/lib/permissions"
 
@@ -51,12 +52,15 @@ export default async function PageNote({params}: UpdateParamProps){
                     </Button>
                     <div className="flex items-center gap-2">
                         {note && (
-                            <ExportButton 
-                                title={note.title} 
-                                description={note.description} 
-                                createAt={note.createAt} 
-                                hasPremiumAccess={hasPremiumAccess} 
-                            />
+                            <>
+                                <ShareButtons title={note.title} description={note.description} />
+                                <ExportButton 
+                                    title={note.title} 
+                                    description={note.description} 
+                                    createAt={note.createAt} 
+                                    hasPremiumAccess={hasPremiumAccess} 
+                                />
+                            </>
                         )}
                         <Button type="submit" className="bg-orange-500 hover:bg-orange-600 text-white">Sauvegarder</Button>
                     </div>
