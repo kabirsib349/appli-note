@@ -34,9 +34,11 @@ export default function ShareButtons({ title, description }: ShareButtonsProps) 
     const mailSubject = encodeURIComponent(safeTitle);
     const mailBody = encodeURIComponent(safeDescription);
 
-    // Suppression de fs=1 pour afficher la barre Google et voir son profil
     const mailtoUrl = `mailto:?subject=${mailSubject}&body=${mailBody}`;
-    const gmailUrl = `https://mail.google.com/mail/?view=cm&su=${mailSubject}&body=${mailBody}`;
+
+    // Forcer le choix du compte Google (Account Chooser) avant d'ouvrir Gmail
+    const gmailBaseUrl = `https://mail.google.com/mail/?view=cm&su=${mailSubject}&body=${mailBody}`;
+    const gmailUrl = `https://accounts.google.com/AccountChooser?continue=${encodeURIComponent(gmailBaseUrl)}`;
 
     return (
         <div className="flex items-center gap-2">
