@@ -23,7 +23,7 @@ export default async function PagePayment(){
                 <Card className="flex flex-col">
                     <CardContent className="py-8">
                         <div>
-                            <h3 className="text-md font-black uppercase bg-orange-900 bg-opacity-20 text-orange-500 p-3 rounded-md inline">
+                            <h3 className="text-md font-black uppercase bg-primary/20 text-primary p-3 rounded-md inline">
                                 Pass Premium
                             </h3>
                             <p className="mt-4 text-sm text-muted-foreground">
@@ -37,7 +37,7 @@ export default async function PagePayment(){
                                 className="block my-4" 
                             />
                             <form className="w-full mt-4" action={createCustomerPortal}>
-                                <Button className="bg-orange-500 hover:bg-orange-600 text-white w-full">
+                                <Button type="submit" className="w-full">
                                     Modifier abonnement
                                 </Button>
                             </form>
@@ -52,11 +52,11 @@ export default async function PagePayment(){
         <div className="mt-3 max-w-lg mx-auto space-y-4">
             <Card className="flex flex-col">
                 <CardContent className="py-8">
-                    <h3 className="inline rounded-md text-md text-orange-500 bg-orange-900/20 p-3 font-black uppercase">
+                    <h3 className="inline rounded-md text-md text-primary bg-primary/20 p-3 font-black uppercase">
                         Pass Premium
                     </h3>
                     <div className="mt-4 text-6xl font-black">
-                        <span>0,00$</span><span className="text-sm text-muted-foreground">/par mois</span>
+                        <span>0,99€</span><span className="text-sm text-muted-foreground">/par mois</span>
                     </div>
                     <p className="mt-4 text-muted-foreground">Avec notre Pass Premium, vous allez découvrir les plaisirs exclusifs du développement web et profiter d'une expérience unique !</p>
                     <div className="flex-1 flex flex-col p-3 mt-4 justify-between rounded-lg bg-secondary space-y-6">
@@ -69,8 +69,8 @@ export default async function PagePayment(){
                             ))}
                         </ul>
                         <form action={createSubscription}>
-                            <Button className="bg-orange-500 hover:bg-orange-600 text-white">
-                                Devener membre premium
+                            <Button type="submit" className="w-full">
+                                Devenir membre premium
                             </Button>
                         </form>
                     </div>
