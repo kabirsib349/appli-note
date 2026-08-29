@@ -5,6 +5,7 @@ import { CheckCircle } from "lucide-react";
 import { createSubscription,getDataStripeUser,createCustomerPortal } from "@/lib/actionsStripe";
 import { Button } from "@/components/ui/button";
 import { getUser } from "@/lib/actionsUser";
+import { isPremiumOrAdmin } from "@/lib/permissions";
 
 export default async function PagePayment(){
 
@@ -16,6 +17,36 @@ export default async function PagePayment(){
     ]
     const user = await getUser();
     const dataStripeUser = await getDataStripeUser(user?.id as string);
+    const hasPremiumAccess = await isPremiumOrAdmin(user?.id as string);
+
+    if (hasPremiumAccess && dataStripeUser?.status !== "active") {
+        return (
+            <div className="max-w-lg mx-auto space-y-4 my-3">
+                <Card className="flex flex-col">
+                    <CardContent className="py-8">
+                        <div>
+                            <h3 className="text-md font-black uppercase bg-primary/20 text-primary p-3 rounded-md inline">
+                                Pass Premium
+                            </h3>
+                            <p className="mt-4 text-sm text-muted-foreground">
+                                Accès Administrateur
+                            </p>
+                            <Image 
+                                src={Badge} 
+                                width={200} 
+                                height={200} 
+                                alt="badge" 
+                                className="block my-4" 
+                            />
+                            <p className="mt-4 text-sm text-muted-foreground">
+                                Vous disposez de tous les avantages Premium grâce à vos droits d'administrateur.
+                            </p>
+                        </div>
+                    </CardContent>
+                </Card>
+            </div>
+        );
+    }
 
     if (dataStripeUser?.status === "active") {
         return (
@@ -27,7 +58,7 @@ export default async function PagePayment(){
                                 Pass Premium
                             </h3>
                             <p className="mt-4 text-sm text-muted-foreground">
-                                Modifier votre abonnement premium
+                                Gérer votre abonnement premium, modifier votre carte ou vos factures.
                             </p>
                             <Image 
                                 src={Badge} 
@@ -38,7 +69,7 @@ export default async function PagePayment(){
                             />
                             <form className="w-full mt-4" action={createCustomerPortal}>
                                 <Button type="submit" className="w-full">
-                                    Modifier abonnement
+                                    Gérer mon abonnement
                                 </Button>
                             </form>
                         </div>
