@@ -1,58 +1,88 @@
- Appli-Note (SaaS)
+# 📝 Appli-Note (SaaS)
 
-  Une application moderne de prise de notes avec un modèle économique SaaS, incluant une gestion d'abonnements Premium.
+Une application moderne de prise de notes avec un modèle économique SaaS, incluant une gestion d'abonnements Premium.
 
-   Stack Technique
+🌐 **Démo en ligne :** [k-note.duckdns.org](https://k-note.duckdns.org)
 
-   - Framework : Next.js 15 (App Router) (https://nextjs.org/)
-   - Authentification : Kinde (https://kinde.com/) (ou ton provider actuel)
-   - Base de données : Prisma (https://www.prisma.io/) avec PostgreSQL (via Supabase/Aiven)
-   - Paiements : Stripe (https://stripe.com/) (Abonnements & Webhooks)
-   - Styling : Tailwind CSS (https://tailwindcss.com/) & Shadcn/ui (https://ui.shadcn.com/)
-   - Icônes : Lucide React (https://lucide.dev/)
+---
 
-   Fonctionnalités
+## 🛠️ Stack Technique
 
-   - Authentification Sécurisée : Connexion et inscription simplifiées.
-   - Gestion des Notes : Création, modification et suppression de notes personnelles.
-   - Pass Premium : Système d'abonnement mensuel(zero fonctionnalité debloqué mais le principe d'abonnement est là😉).
-   - Espace Client Stripe : Gestion de l'abonnement et des factures via le portail client Stripe.
-   - Design Responsive : Interface optimisée pour mobile, tablette et desktop.
-   - Mode Sombre/Clair : Support complet du thème système.
+| Technologie | Description |
+|---|---|
+| [Next.js 16](https://nextjs.org/) | Framework fullstack (App Router) |
+| [NextAuth.js](https://next-auth.js.org/) | Authentification (OAuth & session) |
+| [Prisma](https://www.prisma.io/) + PostgreSQL | ORM & base de données |
+| [Stripe](https://stripe.com/) | Abonnements & Webhooks |
+| [Tailwind CSS v4](https://tailwindcss.com/) & [Shadcn/ui](https://ui.shadcn.com/) | Styling & composants UI |
+| [Lucide React](https://lucide.dev/) | Icônes |
 
-   Installation
+---
 
-   1. Cloner le projet :
+## ✨ Fonctionnalités
 
-   1    git clone https://github.com/ton-username/appli-note.git
-   2    cd appli-note
+- **Authentification Sécurisée** : Connexion et inscription via NextAuth.js (OAuth).
+- **Gestion des Notes** : Création, modification, suppression et épinglage de notes personnelles.
+- **Pass Premium** : Système d'abonnement mensuel via Stripe (le principe est là 😉).
+- **Espace Client Stripe** : Gestion de l'abonnement et des factures via le portail client Stripe.
+- **Design Responsive** : Interface optimisée pour mobile, tablette et desktop.
+- **Mode Sombre/Clair** : Support complet du thème système.
 
-   2. Installer les dépendances :
-   1    npm install
+---
 
-   3. Configurer les variables d'environnement :
-     Crée un fichier .env à la racine et ajoute tes clés :
+## 🚀 Installation
 
-   1    DATABASE_URL=
-   2    KINDE_CLIENT_ID=
-   3    STRIPE_API_KEY=
-   4    STRIPE_WEBHOOK_SECRET=
-   5    NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=
+### 1. Cloner le projet
 
-   4. Initialiser la base de données :
+```bash
+git clone https://github.com/ton-username/appli-note.git
+cd appli-note
+```
 
-   1    npx prisma generate
-   2    npx prisma db push
+### 2. Installer les dépendances
 
-   5. Lancer le serveur de développement :
-   1    npm run dev
+```bash
+npm install
+```
 
-   Configuration Stripe (Local)
+### 3. Configurer les variables d'environnement
 
-  Pour tester les paiements en local, lance le Stripe CLI pour rediriger les webhooks :
+Crée un fichier `.env` à la racine et remplis les clés suivantes :
 
-   1 stripe listen --forward-to localhost:3000/api/webhook/stripe
+```env
+# Base de données
+DATABASE_URL=
+DIRECT_URL=
 
-   Licence
+# NextAuth
+NEXTAUTH_SECRET=
+NEXTAUTH_URL=http://localhost:3000
 
-  Distribué sous la licence MIT. Voir LICENSE pour plus d'informations.
+# Stripe
+STRIPE_API_KEY=
+STRIPE_WEBHOOK_SECRET=
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=
+```
+
+### 4. Initialiser la base de données
+
+```bash
+npx prisma generate
+npx prisma db push
+```
+
+### 5. Lancer le serveur de développement
+
+```bash
+npm run dev
+```
+
+---
+
+## 💳 Configuration Stripe (Local)
+
+Pour tester les paiements en local, utilise le Stripe CLI pour rediriger les webhooks vers ton serveur local :
+
+```bash
+stripe listen --forward-to localhost:3000/api/webhook/stripe
+```
