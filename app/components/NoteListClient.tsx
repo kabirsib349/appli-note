@@ -74,9 +74,9 @@ export default function NoteListClient({ initialNotes, hasPremiumAccess }: NoteL
 
         try {
             toast.info("Génération du PDF en cours...");
-            // Import dynamique pour éviter les erreurs SSR (Server-Side Rendering)
-            // @ts-ignore - html2pdf.js n'a pas de définitions de types officielles
-            const html2pdf = (await import('html2pdf.js')).default;
+            // @ts-ignore
+            const html2pdfModule = await import('html2pdf.js');
+            const html2pdf = html2pdfModule.default || html2pdfModule;
             
             const opt = {
                 margin:       10,
@@ -88,8 +88,9 @@ export default function NoteListClient({ initialNotes, hasPremiumAccess }: NoteL
 
             await html2pdf().set(opt).from(element).save();
             toast.success("PDF exporté avec succès !");
-        } catch (error) {
-            toast.error("Erreur lors de la génération du PDF.");
+        } catch (error: any) {
+            console.error("PDF generation error:", error);
+            toast.error("Erreur PDF: " + (error?.message || "Erreur inconnue"));
         }
     };
 
