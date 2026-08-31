@@ -1,25 +1,25 @@
-export async function callAI(systemPrompt: string, userText: string) {
-    if (!process.env.GROQ_API_KEY) {
-        throw new Error("Clé API Groq manquante dans le fichier .env");
-    }
+// API Ollama locale — compatible OpenAI, aucune clé requise
+const OLLAMA_BASE_URL = process.env.OLLAMA_BASE_URL || "http://localhost:11434";
+const OLLAMA_MODEL = process.env.OLLAMA_MODEL || "qwen2.5:0.5b";
 
+export async function callAI(systemPrompt: string, userText: string) {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 secondes max
+    const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 secondes max (modèle local)
 
     try {
-        const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+        const response = await fetch(`${OLLAMA_BASE_URL}/v1/chat/completions`, {
             method: "POST",
             headers: {
-                "Authorization": `Bearer ${process.env.GROQ_API_KEY}`,
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                model: "groq/compound-mini", // Nouveau modèle officiel ultra-rapide
+                model: OLLAMA_MODEL,
                 messages: [
                     { role: "system", content: systemPrompt },
                     { role: "user", content: userText }
                 ],
-                temperature: 0.5,
+                temperature: 0.3,
+                stream: false,
             }),
             signal: controller.signal
         });
@@ -27,12 +27,9 @@ export async function callAI(systemPrompt: string, userText: string) {
         clearTimeout(timeoutId);
 
         if (!response.ok) {
-            if (response.status === 429) {
-                throw new Error("La limite gratuite de l'IA a été atteinte. Veuillez patienter quelques secondes avant de réessayer.");
-            }
             const errorText = await response.text();
-            console.error("Détail de l'erreur Groq :", errorText);
-            throw new Error(`Erreur de connexion à l'IA (${response.status})`);
+            console.error("Détail de l'erreur Ollama :", errorText);
+            throw new Error(`Erreur de connexion à l'IA locale (${response.status}). Vérifiez qu'Ollama est bien démarré sur le serveur.`);
         }
 
         const data = await response.json();
