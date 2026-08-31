@@ -75,6 +75,7 @@ export default function NoteListClient({ initialNotes, hasPremiumAccess }: NoteL
         try {
             toast.info("Génération du PDF en cours...");
             // Import dynamique pour éviter les erreurs SSR (Server-Side Rendering)
+            // @ts-ignore - html2pdf.js n'a pas de définitions de types officielles
             const html2pdf = (await import('html2pdf.js')).default;
             
             const opt = {
