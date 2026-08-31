@@ -1,5 +1,5 @@
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
-const GEMINI_MODEL = process.env.GEMINI_MODEL || "gemini-2.5-flash";
+const GEMINI_MODEL = process.env.GEMINI_MODEL || "gemini-3.6-flash";
 const GEMINI_BASE_URL = process.env.GEMINI_PROXY_URL || "https://generativelanguage.googleapis.com";
 
 export async function callAI(systemPrompt: string, userText: string) {
