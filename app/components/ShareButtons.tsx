@@ -26,7 +26,8 @@ const OutlookIcon = () => (
 
 export default function ShareButtons({ title, description }: ShareButtonsProps) {
     const safeTitle = title || "Nouvelle note";
-    const safeDescription = description || "";
+    const rawDescription = description || "";
+    const safeDescription = rawDescription.replace(/<[^>]*>?/gm, ''); // Retire les balises HTML
     
     const twitterText = encodeURIComponent(`${safeTitle}\n\n${safeDescription}`);
     const twitterUrl = `https://twitter.com/intent/tweet?text=${twitterText}`;

@@ -1,12 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { correctText, restructureText, improveStyleText } from "@/lib/actionsAI";
 import { toast } from "react-toastify";
-import { Sparkles, Check, Wand2, Loader2, Lock } from "lucide-react";
-import Link from "next/link";
+import { Sparkles, Check, Wand2, Loader2, Bold, Italic, Heading1, Heading2, List, ListOrdered, Quote, Undo, Redo, Strikethrough } from "lucide-react";
+import { useEditor, EditorContent } from '@tiptap/react';
+import StarterKit from '@tiptap/starter-kit';
+import Placeholder from '@tiptap/extension-placeholder';
 
 interface AiTextareaProps {
     defaultValue?: string;
@@ -14,22 +15,38 @@ interface AiTextareaProps {
 }
 
 export default function AiTextarea({ defaultValue = "", hasPremiumAccess }: AiTextareaProps) {
-    const [text, setText] = useState(defaultValue);
     const [activeAction, setActiveAction] = useState<string | null>(null);
 
+    const editor = useEditor({
+        extensions: [
+            StarterKit,
+            Placeholder.configure({
+                placeholder: 'Votre description...',
+            }),
+        ],
+        content: defaultValue,
+        editorProps: {
+            attributes: {
+                class: 'prose prose-sm sm:prose-base dark:prose-invert focus:outline-none max-w-none p-4 border border-t-0 rounded-b-md border-input bg-transparent shadow-sm min-h-[250px]',
+            },
+        },
+    });
+
     const handleAIAction = async (actionName: string, actionFn: (text: string) => Promise<{error?: string, data?: string}>, successMessage: string) => {
-        if (!text.trim()) {
+        if (!editor || editor.isEmpty) {
             toast.error("Veuillez écrire du texte d'abord.");
             return;
         }
 
+        const currentHtml = editor.getHTML();
+
         setActiveAction(actionName);
         try {
-            const result = await actionFn(text);
+            const result = await actionFn(currentHtml);
             if (result.error) {
                 toast.error(result.error);
             } else if (result.data !== undefined) {
-                setText(result.data);
+                editor.commands.setContent(result.data);
                 toast.success(successMessage);
             }
         } catch (error: any) {
@@ -39,10 +56,14 @@ export default function AiTextarea({ defaultValue = "", hasPremiumAccess }: AiTe
         }
     };
 
+    if (!editor) {
+        return null;
+    }
+
     return (
         <div className="flex flex-col gap-y-2">
+            {/* Toolbar IA */}
             <div className="flex flex-wrap items-center gap-2 mb-1">
-                {/* Bouton Gratuit */}
                 <Button 
                     type="button" 
                     variant="outline" 
@@ -55,7 +76,6 @@ export default function AiTextarea({ defaultValue = "", hasPremiumAccess }: AiTe
                     Corriger
                 </Button>
 
-                {/* Boutons Restructurer et Améliorer (Maintenant gratuits) */}
                 <Button 
                     type="button" 
                     variant="outline" 
@@ -80,15 +100,66 @@ export default function AiTextarea({ defaultValue = "", hasPremiumAccess }: AiTe
                 </Button>
             </div>
             
-            <Textarea 
-                name="description" 
-                id="description" 
-                required 
-                placeholder="Votre description"
-                value={text}
-                onChange={(e) => setText(e.target.value)}
-                className="min-h-[150px]"
-            /> 
+            {/* Éditeur Rich Text */}
+            <div className="flex flex-col mt-2">
+                {/* Toolbar Tiptap */}
+                <div className="flex flex-wrap items-center gap-1 p-2 border rounded-t-md bg-muted/30">
+                    <Button type="button" variant="ghost" size="icon" className="h-8 w-8" onClick={() => editor.chain().focus().toggleBold().run()} data-active={editor.isActive('bold') ? '' : undefined}>
+                        <Bold className="h-4 w-4" />
+                    </Button>
+                    <Button type="button" variant="ghost" size="icon" className="h-8 w-8" onClick={() => editor.chain().focus().toggleItalic().run()} data-active={editor.isActive('italic') ? '' : undefined}>
+                        <Italic className="h-4 w-4" />
+                    </Button>
+                    <Button type="button" variant="ghost" size="icon" className="h-8 w-8" onClick={() => editor.chain().focus().toggleStrike().run()} data-active={editor.isActive('strike') ? '' : undefined}>
+                        <Strikethrough className="h-4 w-4" />
+                    </Button>
+                    <div className="w-px h-4 bg-border mx-1" />
+                    <Button type="button" variant="ghost" size="icon" className="h-8 w-8" onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()} data-active={editor.isActive('heading', { level: 1 }) ? '' : undefined}>
+                        <Heading1 className="h-4 w-4" />
+                    </Button>
+                    <Button type="button" variant="ghost" size="icon" className="h-8 w-8" onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()} data-active={editor.isActive('heading', { level: 2 }) ? '' : undefined}>
+                        <Heading2 className="h-4 w-4" />
+                    </Button>
+                    <div className="w-px h-4 bg-border mx-1" />
+                    <Button type="button" variant="ghost" size="icon" className="h-8 w-8" onClick={() => editor.chain().focus().toggleBulletList().run()} data-active={editor.isActive('bulletList') ? '' : undefined}>
+                        <List className="h-4 w-4" />
+                    </Button>
+                    <Button type="button" variant="ghost" size="icon" className="h-8 w-8" onClick={() => editor.chain().focus().toggleOrderedList().run()} data-active={editor.isActive('orderedList') ? '' : undefined}>
+                        <ListOrdered className="h-4 w-4" />
+                    </Button>
+                    <Button type="button" variant="ghost" size="icon" className="h-8 w-8" onClick={() => editor.chain().focus().toggleBlockquote().run()} data-active={editor.isActive('blockquote') ? '' : undefined}>
+                        <Quote className="h-4 w-4" />
+                    </Button>
+                    <div className="w-px h-4 bg-border mx-1" />
+                    <Button type="button" variant="ghost" size="icon" className="h-8 w-8" onClick={() => editor.chain().focus().undo().run()} disabled={!editor.can().undo()}>
+                        <Undo className="h-4 w-4" />
+                    </Button>
+                    <Button type="button" variant="ghost" size="icon" className="h-8 w-8" onClick={() => editor.chain().focus().redo().run()} disabled={!editor.can().redo()}>
+                        <Redo className="h-4 w-4" />
+                    </Button>
+                </div>
+                
+                {/* Zone d'édition */}
+                <div className="relative">
+                    <EditorContent editor={editor} />
+                    <style jsx global>{`
+                        .ProseMirror p.is-editor-empty:first-child::before {
+                            color: #adb5bd;
+                            content: attr(data-placeholder);
+                            float: left;
+                            height: 0;
+                            pointer-events: none;
+                        }
+                        button[data-active] {
+                            background-color: var(--accent);
+                            color: var(--accent-foreground);
+                        }
+                    `}</style>
+                </div>
+            </div>
+
+            {/* Input caché pour l'envoi du formulaire natif */}
+            <input type="hidden" name="description" id="description" value={editor.getHTML()} />
         </div>
     );
 }
