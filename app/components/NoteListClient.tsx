@@ -51,7 +51,7 @@ export default function NoteListClient({ initialNotes, hasPremiumAccess }: NoteL
         }
     };
 
-    const handleExport = async (note: Note) => {
+    const handleExport = (note: Note) => {
         if (!hasPremiumAccess) {
             toast.error("Cette fonctionnalité est réservée aux utilisateurs Premium.");
             return;
@@ -60,38 +60,62 @@ export default function NoteListClient({ initialNotes, hasPremiumAccess }: NoteL
         const title = note.title || "Note sans titre";
         const dateStr = new Intl.DateTimeFormat('fr-FR', { dateStyle: 'full' }).format(new Date(note.createAt));
         
-        // Créer un élément invisible contenant le HTML à exporter
-        const element = document.createElement("div");
-        element.innerHTML = `
-            <div style="font-family: sans-serif; padding: 20px;">
-                <h1 style="color: #ea580c; border-bottom: 2px solid #ea580c; padding-bottom: 10px;">${title}</h1>
-                <p style="color: #6b7280; font-size: 12px; margin-bottom: 20px;">Écrit le ${dateStr}</p>
-                <div style="line-height: 1.6;">
-                    ${note.description || "<em>Aucun contenu</em>"}
-                </div>
-            </div>
-        `;
-
-        try {
-            toast.info("Génération du PDF en cours...");
-            // @ts-ignore
-            const html2pdfModule = await import('html2pdf.js');
-            const html2pdf = html2pdfModule.default || html2pdfModule;
-            
-            const opt = {
-                margin:       10,
-                filename:     `${title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.pdf`,
-                image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2 },
-                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
-            };
-
-            await html2pdf().set(opt).from(element).save();
-            toast.success("PDF exporté avec succès !");
-        } catch (error: any) {
-            console.error("PDF generation error:", error);
-            toast.error("Erreur PDF: " + (error?.message || "Erreur inconnue"));
+        const printWindow = window.open('', '', 'width=800,height=900');
+        if (!printWindow) {
+            toast.error("Veuillez autoriser les fenêtres contextuelles (pop-ups) pour exporter.");
+            return;
         }
+
+        printWindow.document.write(`
+            <!DOCTYPE html>
+            <html>
+                <head>
+                    <title>${title}</title>
+                    <style>
+                        body { 
+                            font-family: system-ui, -apple-system, sans-serif; 
+                            padding: 40px; 
+                            color: #111827;
+                            max-width: 800px;
+                            margin: 0 auto;
+                        }
+                        h1 { 
+                            color: #ea580c; 
+                            border-bottom: 2px solid #ea580c; 
+                            padding-bottom: 10px; 
+                            margin-top: 0;
+                        }
+                        .date { 
+                            color: #6b7280; 
+                            font-size: 14px; 
+                            margin-bottom: 30px; 
+                        }
+                        .content { 
+                            line-height: 1.6; 
+                        }
+                        /* Cache les éléments inutiles à l'impression */
+                        @media print {
+                            @page { margin: 2cm; }
+                        }
+                    </style>
+                </head>
+                <body>
+                    <h1>${title}</h1>
+                    <div class="date">Écrit le ${dateStr}</div>
+                    <div class="content">${note.description || "<em>Aucun contenu</em>"}</div>
+                    
+                    <script>
+                        // Déclenche l'impression dès que la page est chargée
+                        window.onload = () => {
+                            window.print();
+                            // Ferme la fenêtre après l'impression (certains navigateurs bloquent, d'autres non)
+                            setTimeout(() => window.close(), 500);
+                        };
+                    </script>
+                </body>
+            </html>
+        `);
+        printWindow.document.close();
     };
 
     return (
