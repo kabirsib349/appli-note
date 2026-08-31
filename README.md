@@ -15,16 +15,19 @@ Une application moderne de prise de notes avec un modèle économique SaaS, incl
 | [Prisma](https://www.prisma.io/) + PostgreSQL | ORM & base de données |
 | [Stripe](https://stripe.com/) | Abonnements & Webhooks |
 | [Tailwind CSS v4](https://tailwindcss.com/) & [Shadcn/ui](https://ui.shadcn.com/) | Styling & composants UI |
+| [Tiptap](https://tiptap.dev/) | Éditeur de Texte Riche (WYSIWYG) |
 | [Lucide React](https://lucide.dev/) | Icones |
-| [Gemini API](https://aistudio.google.com/) (gemini-2.5-flash) | IA pour assistance a la redaction |
+| [Gemini API](https://aistudio.google.com/) (gemini-3.6-flash) | IA pour assistance a la redaction |
 
 ---
 
 ## Fonctionnalites
 
 - **Authentification Securisee** : Connexion et inscription via NextAuth.js (OAuth).
-- **Gestion des Notes** : Creation, modification, suppression et epinglage de notes personnelles.
-- **Assistance IA** : Correction orthographique, restructuration Markdown et amelioration de style via l'API Gemini.
+- **Gestion des Notes** : Creation, modification, suppression et epinglage de notes.
+- **Éditeur de Texte Riche** : Mise en forme avancée du texte grâce à l'éditeur intégré (Tiptap).
+- **Exportation** : Export des notes au format PDF propre (natif) pour les utilisateurs Premium.
+- **Assistance IA** : Correction orthographique, restructuration intelligente et amelioration de style via l'API Gemini.
 - **Pass Premium** : Systeme d'abonnement mensuel via Stripe.
 - **Espace Client Stripe** : Gestion de l'abonnement et des factures via le portail client Stripe.
 - **Design Responsive** : Interface optimisee pour mobile, tablette et desktop.
@@ -67,6 +70,7 @@ NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=
 
 # Gemini (cle gratuite sur https://aistudio.google.com/apikey)
 GEMINI_API_KEY=
+GEMINI_PROXY_URL= # Optionnel : URL du proxy Cloudflare si l'API est bloquée dans ta région
 ```
 
 ### 4. Initialiser la base de donnees
@@ -107,5 +111,5 @@ L'application utilise l'API gratuite de Google Gemini (gemini-2.5-flash) pour le
 ### Fonctionnalites IA disponibles
 
 - **Corriger** : corrige les fautes d'orthographe et de grammaire
-- **Restructurer** : organise le contenu en Markdown
+- **Restructurer** : organise le contenu visuellement (titres, listes)
 - **Ameliorer le style** : ameliore le vocabulaire et la fluidite
