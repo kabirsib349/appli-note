@@ -93,9 +93,10 @@ export default function NoteListClient({ initialNotes, hasPremiumAccess }: NoteL
                         .content { 
                             line-height: 1.6; 
                         }
-                        /* Cache les éléments inutiles à l'impression */
+                        /* Cache les éléments inutiles à l'impression et retire les en-têtes/pieds de page du navigateur */
                         @media print {
-                            @page { margin: 2cm; }
+                            @page { margin: 0; }
+                            body { margin: 2cm; }
                         }
                     </style>
                 </head>
