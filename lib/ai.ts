@@ -1,5 +1,6 @@
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const GEMINI_MODEL = process.env.GEMINI_MODEL || "gemini-2.5-flash";
+const GEMINI_BASE_URL = process.env.GEMINI_PROXY_URL || "https://generativelanguage.googleapis.com";
 
 export async function callAI(systemPrompt: string, userText: string) {
     if (!GEMINI_API_KEY) {
@@ -10,7 +11,7 @@ export async function callAI(systemPrompt: string, userText: string) {
     const timeoutId = setTimeout(() => controller.abort(), 30000);
 
     try {
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`;
+        const url = `${GEMINI_BASE_URL}/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`;
 
         const response = await fetch(url, {
             method: "POST",
