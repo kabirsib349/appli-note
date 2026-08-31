@@ -16,7 +16,7 @@ Une application moderne de prise de notes avec un modèle économique SaaS, incl
 | [Stripe](https://stripe.com/) | Abonnements & Webhooks |
 | [Tailwind CSS v4](https://tailwindcss.com/) & [Shadcn/ui](https://ui.shadcn.com/) | Styling & composants UI |
 | [Lucide React](https://lucide.dev/) | Icones |
-| [Ollama](https://ollama.com/) + qwen2.5:0.5b | IA locale pour assistance a la redaction |
+| [Gemini API](https://aistudio.google.com/) (gemini-2.5-flash) | IA pour assistance a la redaction |
 
 ---
 
@@ -24,7 +24,7 @@ Une application moderne de prise de notes avec un modèle économique SaaS, incl
 
 - **Authentification Securisee** : Connexion et inscription via NextAuth.js (OAuth).
 - **Gestion des Notes** : Creation, modification, suppression et epinglage de notes personnelles.
-- **Assistance IA** : Correction orthographique, restructuration Markdown et amelioration de style via un modele LLM auto-heberge (Ollama).
+- **Assistance IA** : Correction orthographique, restructuration Markdown et amelioration de style via l'API Gemini.
 - **Pass Premium** : Systeme d'abonnement mensuel via Stripe.
 - **Espace Client Stripe** : Gestion de l'abonnement et des factures via le portail client Stripe.
 - **Design Responsive** : Interface optimisee pour mobile, tablette et desktop.
@@ -65,9 +65,8 @@ STRIPE_API_KEY=
 STRIPE_WEBHOOK_SECRET=
 NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=
 
-# Ollama (optionnel — valeurs par defaut deja dans le code)
-OLLAMA_BASE_URL=http://localhost:11434
-OLLAMA_MODEL=qwen2.5:0.5b
+# Gemini (cle gratuite sur https://aistudio.google.com/apikey)
+GEMINI_API_KEY=
 ```
 
 ### 4. Initialiser la base de donnees
@@ -95,26 +94,18 @@ stripe listen --forward-to localhost:3000/api/webhook/stripe
 
 ---
 
-## Configuration Ollama (IA locale)
+## Configuration Gemini (IA)
 
-L'application utilise un modele LLM auto-heberge via Ollama pour les fonctionnalites d'assistance a la redaction. Aucune cle API externe n'est requise.
+L'application utilise l'API gratuite de Google Gemini (gemini-2.5-flash) pour les fonctionnalites d'assistance a la redaction.
 
-### Installation sur le serveur
+### Obtenir une cle API
 
-```bash
-# Installer Ollama
-curl -fsSL https://ollama.com/install.sh | sh
-
-# Telecharger le modele (environ 270 MB)
-ollama pull qwen2.5:0.5b
-
-# Activer le demarrage automatique
-sudo systemctl enable ollama
-sudo systemctl start ollama
-```
+1. Aller sur [Google AI Studio](https://aistudio.google.com/apikey)
+2. Creer une cle API (gratuit, sans carte bancaire)
+3. Ajouter la cle dans le fichier `.env` : `GEMINI_API_KEY=ta_cle_ici`
 
 ### Fonctionnalites IA disponibles
 
-- **Corriger** : corrige les fautes d'orthographe et de grammaire (gratuit)
-- **Restructurer** : organise le contenu en Markdown (gratuit)
-- **Ameliorer le style** : ameliore le vocabulaire et la fluidite (gratuit)
+- **Corriger** : corrige les fautes d'orthographe et de grammaire
+- **Restructurer** : organise le contenu en Markdown
+- **Ameliorer le style** : ameliore le vocabulaire et la fluidite

@@ -1,26 +1,33 @@
-// API Ollama locale — compatible OpenAI, aucune clé requise
-const OLLAMA_BASE_URL = process.env.OLLAMA_BASE_URL || "http://localhost:11434";
-const OLLAMA_MODEL = process.env.OLLAMA_MODEL || "qwen2.5:0.5b";
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+const GEMINI_MODEL = process.env.GEMINI_MODEL || "gemini-2.5-flash";
 
 export async function callAI(systemPrompt: string, userText: string) {
+    if (!GEMINI_API_KEY) {
+        throw new Error("Clé API Gemini manquante dans le fichier .env (GEMINI_API_KEY)");
+    }
+
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 60000); // 60 secondes max (modèle local)
+    const timeoutId = setTimeout(() => controller.abort(), 30000);
 
     try {
-        const response = await fetch(`${OLLAMA_BASE_URL}/v1/chat/completions`, {
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`;
+
+        const response = await fetch(url, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                model: OLLAMA_MODEL,
-                messages: [
-                    { role: "system", content: systemPrompt },
-                    { role: "user", content: userText }
+                systemInstruction: {
+                    parts: [{ text: systemPrompt }]
+                },
+                contents: [
+                    { role: "user", parts: [{ text: userText }] }
                 ],
-                temperature: 0.3,
-                stream: false,
-                max_tokens: 600,
+                generationConfig: {
+                    temperature: 0.3,
+                    maxOutputTokens: 2048,
+                }
             }),
             signal: controller.signal
         });
@@ -28,13 +35,16 @@ export async function callAI(systemPrompt: string, userText: string) {
         clearTimeout(timeoutId);
 
         if (!response.ok) {
+            if (response.status === 429) {
+                throw new Error("Limite de requêtes Gemini atteinte. Réessayez dans quelques secondes.");
+            }
             const errorText = await response.text();
-            console.error("Détail de l'erreur Ollama :", errorText);
-            throw new Error(`Erreur de connexion à l'IA locale (${response.status}). Vérifiez qu'Ollama est bien démarré sur le serveur.`);
+            console.error("Erreur Gemini :", errorText);
+            throw new Error(`Erreur de connexion à l'IA (${response.status})`);
         }
 
         const data = await response.json();
-        return data.choices[0].message.content as string;
+        return data.candidates[0].content.parts[0].text as string;
 
     } catch (error: any) {
         clearTimeout(timeoutId);
@@ -44,3 +54,4 @@ export async function callAI(systemPrompt: string, userText: string) {
         throw error;
     }
 }
+
