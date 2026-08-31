@@ -51,24 +51,45 @@ export default function NoteListClient({ initialNotes, hasPremiumAccess }: NoteL
         }
     };
 
-    const handleExport = (note: Note) => {
+    const handleExport = async (note: Note) => {
         if (!hasPremiumAccess) {
             toast.error("Cette fonctionnalité est réservée aux utilisateurs Premium.");
             return;
         }
 
         const title = note.title || "Note sans titre";
-        const content = `# ${title}\n\n*Date: ${new Date(note.createAt).toLocaleDateString("fr-FR")}*\n\n${note.description || ""}`;
+        const dateStr = new Intl.DateTimeFormat('fr-FR', { dateStyle: 'full' }).format(new Date(note.createAt));
         
-        const blob = new Blob([content], { type: "text/markdown" });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = `${title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.md`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
+        // Créer un élément invisible contenant le HTML à exporter
+        const element = document.createElement("div");
+        element.innerHTML = `
+            <div style="font-family: sans-serif; padding: 20px;">
+                <h1 style="color: #ea580c; border-bottom: 2px solid #ea580c; padding-bottom: 10px;">${title}</h1>
+                <p style="color: #6b7280; font-size: 12px; margin-bottom: 20px;">Écrit le ${dateStr}</p>
+                <div style="line-height: 1.6;">
+                    ${note.description || "<em>Aucun contenu</em>"}
+                </div>
+            </div>
+        `;
+
+        try {
+            toast.info("Génération du PDF en cours...");
+            // Import dynamique pour éviter les erreurs SSR (Server-Side Rendering)
+            const html2pdf = (await import('html2pdf.js')).default;
+            
+            const opt = {
+                margin:       10,
+                filename:     `${title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.pdf`,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2 },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            await html2pdf().set(opt).from(element).save();
+            toast.success("PDF exporté avec succès !");
+        } catch (error) {
+            toast.error("Erreur lors de la génération du PDF.");
+        }
     };
 
     return (
@@ -113,7 +134,7 @@ export default function NoteListClient({ initialNotes, hasPremiumAccess }: NoteL
                             <div className="flex flex-wrap items-center gap-2">
                                 {/* Bouton Exporter */}
                                 {hasPremiumAccess && (
-                                    <Button type="button" variant="outline" size="icon" onClick={() => handleExport(item)} title="Exporter en Markdown">
+                                    <Button type="button" variant="outline" size="icon" onClick={() => handleExport(item)} title="Exporter en PDF">
                                         <Download className="w-4 h-4 text-gray-500" />
                                     </Button>
                                 )}
