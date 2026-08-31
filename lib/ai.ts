@@ -4,7 +4,7 @@ const OLLAMA_MODEL = process.env.OLLAMA_MODEL || "qwen2.5:0.5b";
 
 export async function callAI(systemPrompt: string, userText: string) {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 secondes max (modèle local)
+    const timeoutId = setTimeout(() => controller.abort(), 60000); // 60 secondes max (modèle local)
 
     try {
         const response = await fetch(`${OLLAMA_BASE_URL}/v1/chat/completions`, {
@@ -20,6 +20,7 @@ export async function callAI(systemPrompt: string, userText: string) {
                 ],
                 temperature: 0.3,
                 stream: false,
+                max_tokens: 600,
             }),
             signal: controller.signal
         });
