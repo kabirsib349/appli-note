@@ -1,34 +1,32 @@
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
-const GEMINI_MODEL = process.env.GEMINI_MODEL || "gemini-3.6-flash";
-const GEMINI_BASE_URL = process.env.GEMINI_PROXY_URL || "https://generativelanguage.googleapis.com";
+const MISTRAL_API_KEY = process.env.MISTRAL_API_KEY;
+const MISTRAL_MODEL = process.env.MISTRAL_MODEL || "mistral-small-latest";
+const MISTRAL_BASE_URL = "https://api.mistral.ai/v1";
 
 export async function callAI(systemPrompt: string, userText: string) {
-    if (!GEMINI_API_KEY) {
-        throw new Error("Clé API Gemini manquante dans le fichier .env (GEMINI_API_KEY)");
+    if (!MISTRAL_API_KEY) {
+        throw new Error("Clé API Mistral manquante dans le fichier .env (MISTRAL_API_KEY)");
     }
 
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 30000);
 
     try {
-        const url = `${GEMINI_BASE_URL}/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`;
+        const url = `${MISTRAL_BASE_URL}/chat/completions`;
 
         const response = await fetch(url, {
             method: "POST",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${MISTRAL_API_KEY}`
             },
             body: JSON.stringify({
-                systemInstruction: {
-                    parts: [{ text: systemPrompt }]
-                },
-                contents: [
-                    { role: "user", parts: [{ text: userText }] }
+                model: MISTRAL_MODEL,
+                messages: [
+                    { role: "system", content: systemPrompt },
+                    { role: "user", content: userText }
                 ],
-                generationConfig: {
-                    temperature: 0.3,
-                    maxOutputTokens: 2048,
-                }
+                temperature: 0.3,
+                max_tokens: 2048
             }),
             signal: controller.signal
         });
@@ -37,15 +35,15 @@ export async function callAI(systemPrompt: string, userText: string) {
 
         if (!response.ok) {
             if (response.status === 429) {
-                throw new Error("Limite de requêtes Gemini atteinte. Réessayez dans quelques secondes.");
+                throw new Error("Limite de requêtes Mistral atteinte. Réessayez dans quelques secondes.");
             }
             const errorText = await response.text();
-            console.error("Erreur Gemini :", errorText);
+            console.error("Erreur Mistral :", errorText);
             throw new Error(`Erreur de connexion à l'IA (${response.status})`);
         }
 
         const data = await response.json();
-        return data.candidates[0].content.parts[0].text as string;
+        return data.choices[0].message.content as string;
 
     } catch (error: any) {
         clearTimeout(timeoutId);

@@ -17,7 +17,7 @@ Une application moderne de prise de notes avec un modèle économique SaaS, incl
 | [Tailwind CSS v4](https://tailwindcss.com/) & [Shadcn/ui](https://ui.shadcn.com/) | Styling & composants UI |
 | [Tiptap](https://tiptap.dev/) | Éditeur de Texte Riche (WYSIWYG) |
 | [Lucide React](https://lucide.dev/) | Icones |
-| [Gemini API](https://aistudio.google.com/) (gemini-3.6-flash) | IA pour assistance a la redaction |
+| [Mistral AI API](https://mistral.ai/) (mistral-small-latest) | IA pour assistance à la rédaction |
 
 ---
 
@@ -27,7 +27,7 @@ Une application moderne de prise de notes avec un modèle économique SaaS, incl
 - **Gestion des Notes** : Creation, modification, suppression et epinglage de notes.
 - **Éditeur de Texte Riche** : Mise en forme avancée du texte grâce à l'éditeur intégré (Tiptap).
 - **Exportation** : Export des notes au format PDF propre (natif) pour les utilisateurs Premium.
-- **Assistance IA** : Correction orthographique, restructuration intelligente et amelioration de style via l'API Gemini.
+- **Assistance IA** : Correction orthographique, restructuration intelligente et amelioration de style via l'API Mistral.
 - **Pass Premium** : Systeme d'abonnement mensuel via Stripe.
 - **Espace Client Stripe** : Gestion de l'abonnement et des factures via le portail client Stripe.
 - **Design Responsive** : Interface optimisee pour mobile, tablette et desktop.
@@ -68,9 +68,8 @@ STRIPE_API_KEY=
 STRIPE_WEBHOOK_SECRET=
 NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=
 
-# Gemini (cle gratuite sur https://aistudio.google.com/apikey)
-GEMINI_API_KEY=
-GEMINI_PROXY_URL= # Optionnel : URL du proxy Cloudflare si l'API est bloquée dans ta région
+# Mistral AI (clé gratuite sur https://console.mistral.ai/)
+MISTRAL_API_KEY=
 ```
 
 ### 4. Initialiser la base de donnees
@@ -98,15 +97,15 @@ stripe listen --forward-to localhost:3000/api/webhook/stripe
 
 ---
 
-## Configuration Gemini (IA)
+## Configuration Mistral (IA)
 
-L'application utilise l'API gratuite de Google Gemini (gemini-2.5-flash) pour les fonctionnalites d'assistance a la redaction.
+L'application utilise l'API de Mistral AI pour les fonctionnalités d'assistance à la rédaction.
 
-### Obtenir une cle API
+### Obtenir une clé API
 
-1. Aller sur [Google AI Studio](https://aistudio.google.com/apikey)
-2. Creer une cle API (gratuit, sans carte bancaire)
-3. Ajouter la cle dans le fichier `.env` : `GEMINI_API_KEY=ta_cle_ici`
+1. Aller sur [La Console Mistral](https://console.mistral.ai/)
+2. Créer un compte et générer une clé API
+3. Ajouter la clé dans le fichier `.env` : `MISTRAL_API_KEY=ta_cle_ici`
 
 ### Fonctionnalites IA disponibles
 
